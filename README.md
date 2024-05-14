@@ -12,14 +12,14 @@
     cd gtsam-4.1.1/
     mkdir build && cd build
     cmake -DGTSAM_BUILD_WITH_MARCH_NATIVE=OFF -DGTSAM_USE_SYSTEM_EIGEN=ON ..
-    sudo make install -j16
+    sudo make install -j4
     ```
 + [`Teaser++`](https://github.com/MIT-SPARK/TEASER-plusplus)
     ```shell
     git clone https://github.com/MIT-SPARK/TEASER-plusplus.git
     cd TEASER-plusplus && mkdir build && cd build
     cmake .. -DENABLE_DIAGNOSTIC_PRINT=OFF
-    sudo make install -j16
+    sudo make install -j4
     sudo ldconfig
     ```
 + `tbb` (is used for faster `Quatro`)
@@ -30,22 +30,24 @@
 ### How to build and use
 + Get the code and then build the main code.
     ```shell
-    cd ~/your_workspace/src
+    cd ~/<your_workspace>/src
     git clone https://github.com/engcang/FAST-LIO-SAM-QN --recursive
 
-    cd ~/your_workspace
+    cd ~/<your_workspace>
     # nano_gicp, quatro first
     catkin build nano_gicp -DCMAKE_BUILD_TYPE=Release
     # Note the option!
     catkin build quatro -DCMAKE_BUILD_TYPE=Release -DQUATRO_TBB=ON
     catkin build -DCMAKE_BUILD_TYPE=Release
-    . devel/setup.bash
+    cd ./src/FAST-LIO-SAM-QN/third_party/FAST_LIO
+    git branch
+    git pull origin <branch>
+    cd ./<your_workspace>
+    source ./devel/setup.bash
     ```
 + Then run (change config files in third_party/`FAST_LIO`)
     ```shell
     roslaunch fast_lio_sam_qn run.launch lidar:=ouster
-    roslaunch fast_lio_sam_qn run.launch lidar:=velodyne
-    roslaunch fast_lio_sam_qn run.launch lidar:=livox
     ```
 
 <br>
