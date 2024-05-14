@@ -99,5 +99,5 @@
     ```
 + Then run
     ```shell
-    roslaunch 
+    roslaunch vehicle_simulator vipbot_control.launch
     ```
