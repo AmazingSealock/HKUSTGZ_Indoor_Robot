@@ -1,6 +1,6 @@
 # VIP_ROBOT
 
-##FAST-LIO-SAM-QN
+## FAST-LIO-SAM-QN
 
 ### Dependencies
 + `C++` >= 17, `OpenMP` >= 4.5, `CMake` >= 3.10.0, `Eigen` >= 3.2, `Boost` >= 1.54
