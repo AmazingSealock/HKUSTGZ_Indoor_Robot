@@ -1,0 +1,55 @@
+#GlobalPlanner:
+#  allow_unknown: true
+#  default_tolerance: 1.0
+#  use_dijkstra: ture
+#  use_quadratic: true
+#  use_grid_path: false
+#  lethal_cost: 253
+#  neutral_cost: 66
+#  cost_factor: 0.5
+#  publish_potential: True
+
+RegularGlobalPlanner:
+  epsilon: 0.3  # distance threshold for final waypoint
+  waypoints_per_meter: 10  # number of waypoints per meter for the interpolation of the path
+
+DWAPlannerROS:
+  acc_lim_th: 10
+  acc_lim_x: 5
+  acc_lim_y: 0
+  max_vel_x: 5.0
+  min_vel_x: -5.0
+  max_vel_y: 0.0
+  min_vel_y: 0.0
+  max_vel_theta: 5.0
+  min_vel_theta: -5.0
+
+  max_vel_trans: 2.5
+  min_vel_trans: -2.5
+
+  sim_time: 9.0
+  sim_granularity: 0.025
+  vx_samples: 20
+  vy_samples: 0
+  vtheta_samples: 5
+  sim_period: 0.05
+
+  goal_distance_bias: 20.0
+  path_distance_bias: 10.0
+  occdist_scale: 0.01
+  stop_time_buffer: 0.001
+  controller_frequency: 15.0
+  oscillation_reset_dist: 0.05
+  forward_point_distance: 0.325
+  scaling_speed: 0.25
+  max_scaling_factor: 0.1
+
+  xy_goal_tolerance: 0.5
+  yaw_goal_tolerance: 0.7
+  theta_stopped_vel: 0.1
+  trans_stopped_vel: 0.1
+
+  #  footprint_model:
+  #    type: "polygon"
+  #    vertices:  [[0.45,0.35], [0.45,-0.35], [-0.45, -0.35], [-0.45, 0.35]]
+  #    vertices:  [[0.3,0.25], [0.3,-0.25], [-0.3, -0.25], [-0.3, 0.25]] # for type "polygon"

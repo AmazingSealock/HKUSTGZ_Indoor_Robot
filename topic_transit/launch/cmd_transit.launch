@@ -1,0 +1,11 @@
+<launch>
+    <arg name="input_topic" value="/cmd_vel" />
+    <arg name="output_topic" value="/ranger/cmd_vel" />
+    <arg name="frequency" value="10.0" />
+
+    <node name="cmd_transit" pkg="topic_transit" type="cmd_transit" output="screen">
+        <param name="input_topic" value="$(arg input_topic)" />
+        <param name="output_topic" value="$(arg output_topic)" />
+        <param name="frequency" value="$(arg frequency)" />
+    </node>
+</launch>

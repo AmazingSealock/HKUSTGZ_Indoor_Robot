@@ -1,0 +1,146 @@
+#GlobalPlanner:
+#  allow_unknown: true
+#  default_tolerance: 1.0
+#  use_dijkstra: ture
+#  use_quadratic: true
+#  use_grid_path: false
+#  lethal_cost: 253
+#  neutral_cost: 66
+#  cost_factor: 0.5
+#  publish_potential: True
+
+RegularGlobalPlanner:
+  epsilon: 0.3  # distance threshold for final waypoint
+  waypoints_per_meter: 10  # number of waypoints per meter for the interpolation of the path
+
+TebLocalPlannerROS:
+  odom_topic: odom
+  map_frame: odom
+
+  # Trajectory
+  teb_autosize: True
+  dt_ref: 0.25
+  dt_hysteresis: 0.1
+  min_samples: 5
+  max_samples: 500
+  global_plan_overwrite_orientation: True
+  allow_init_with_backwards_motion: True
+  max_global_plan_lookahead_dist: -0.1
+  global_plan_viapoint_sep: -0.1
+  global_plan_prune_distance: 5
+  exact_arc_length: False
+  feasibility_check_no_poses: 1
+  publish_feedback: True
+
+  # Robot
+  max_vel_x: 4
+  max_vel_x_backwards: 0.3
+  max_vel_y: 0.0
+  max_vel_theta: 0.5
+  acc_lim_x: 2.5
+  acc_lim_y: 0.0
+  acc_lim_theta: 0.5
+  min_turning_radius: 0.0 # omni-drive robot (can turn on place!)
+
+  footprint_model:
+    type: "polygon"
+    vertices:  [[0.45,0.35], [0.45,-0.35], [-0.45, -0.35], [-0.45, 0.35]]
+#    vertices:  [[0.3,0.25], [0.3,-0.25], [-0.3, -0.25], [-0.3, 0.25]] # for type "polygon"
+
+  # GoalTolerance
+  xy_goal_tolerance: 0.5
+  yaw_goal_tolerance: 0.2
+  free_goal_vel: False
+  complete_global_plan: True
+
+  # Obstacles
+  min_obstacle_dist: 0.3 # This value must also include our robot radius, since footprint_model is set to "point".
+  inflation_dist: 0.4
+  include_costmap_obstacles: True
+  costmap_obstacles_behind_robot_dist: 3.0
+  obstacle_poses_affected: 25
+  costmap_converter_spin_thread: True
+  costmap_converter_rate: 25
+
+  costmap_converter_plugin: "costmap_converter::CostmapToPolygonsDBSMCCH"
+  CostmapToPolygonsDBSMCCH:
+    cluster_max_distance: 0.4
+    cluster_min_pts: 2
+    cluster_max_pts: 500
+    convex_hull_min_pt_separation: 0.5
+
+#  costmap_converter_plugin: "costmap_converter::CostmapToPolygonsDBSConcaveHull"
+#  costmap_converter/CostmapToPolygonsDBSConcaveHull:
+#    cluster_max_distance: 0.6
+#    cluster_min_pts: 2
+#    cluster_max_pts: 100
+#    concave_hull_alpha: 1.5
+#    init_iterations: 1000
+#    min_keypoint_separation: 0.2
+
+  #  costmap_converter/CostmapToLinesDBSRANSAC:
+#    cluster_max_distance: 0.4
+#    cluster_min_pts: 2
+#    ransac_inlier_distance: 0.15
+#    ransac_min_inliers: 2
+#    ransac_no_iterations: 2000
+#    ransac_remainig_outliers: 3
+#    ransac_convert_outlier_pts: True
+#    ransac_filter_remaining_outlier_pts: False
+#    convex_hull_min_pt_separation: 0.1
+
+  # Optimization
+  no_inner_iterations: 3
+  no_outer_iterations: 3
+  optimization_activate: true
+  optimization_verbose: False
+  penalty_epsilon: 0.1
+  obstacle_cost_exponent: 4
+  weight_max_vel_x: 0.2
+  weight_max_vel_y: 0.0
+  weight_max_vel_theta: 0.2
+  weight_acc_lim_x: 1
+  weight_acc_lim_y: 0
+  weight_acc_lim_theta: 1
+  weight_kinematics_nh: 0.0
+  weight_kinematics_forward_drive: 0.0
+  weight_kinematics_turning_radius: 0.0
+  weight_optimaltime: 0.1 # must be > 0
+  weight_shortest_path: 1.5
+  weight_obstacle: 50
+  weight_inflation: 0.01
+  weight_dynamic_obstacle: 5
+  weight_dynamic_obstacle_inflation: 0.2
+  weight_viapoint: 1
+  weight_adapt_factor: 2
+
+  # Homotopy Class Planner
+  enable_homotopy_class_planning: true
+  enable_multithreading: true
+  max_number_classes: 4
+  selection_cost_hysteresis: 1.0
+  selection_prefer_initial_plan: 0.9
+  selection_obst_cost_scale: 1.0
+  selection_alternative_time_cost: False
+
+  roadmap_graph_no_samples: 15
+  roadmap_graph_area_width: 10
+  roadmap_graph_area_length_scale: 1.0
+  h_signature_prescaler: 0.5
+  h_signature_threshold: 0.1
+  obstacle_heading_threshold: 0.45
+  switching_blocking_period: 0.0
+  viapoints_all_candidates: True
+  delete_detours_backwards: False # Could back
+  max_ratio_detours_duration_best_duration: 3.0
+  visualize_hc_graph: true # Debug
+  visualize_with_time_as_z_axis_scale: true
+
+  # Recovery
+  shrink_horizon_backup: true
+  shrink_horizon_min_duration: 10
+  oscillation_recovery: true
+  oscillation_v_eps: 0.1
+  oscillation_omega_eps: 0.1
+  oscillation_recovery_min_duration: 10
+  oscillation_filter_duration: 10

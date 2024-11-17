@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="ranger_ouster">
+    <xacro:arg name="use_simulation" default="false"/>
+    <xacro:include filename="$(find real_v1_config)/urdf/ranger_mini_real.xacro"/>
+
+    <link name="os_sensor">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0"/>
+            <mass value="0.5"/>
+            <inertia ixx="1" ixy="0.0" ixz="0.0" iyy="1" iyz="0.0" izz="1"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="0.15 0.15 0.2"/>
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="0.15 0.15 0.2"/>
+            </geometry>
+        </collision>
+    </link>
+    <joint name="fixed_ouster_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="os_sensor"/>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+    </joint>
+</robot>

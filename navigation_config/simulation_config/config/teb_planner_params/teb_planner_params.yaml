@@ -1,0 +1,134 @@
+#GlobalPlanner:
+#  allow_unknown: true  #默认true，是否允许路径穿过未知区域
+#  default_tolerance: 0.2  #默认0.0，目标容差
+#  visualize_potential: false #默认false，是否显示从PointCloud2计算得到的势区域
+#  use_dijkstra: true #默认true，true表示使用dijkstra's否则使用A*
+#  use_quadratic: true #默认true，true表示使用二次函数近似函数
+#  use_grid_path: false #默认false，true表示使路径沿栅格边界生成，否则使用梯度下降算法
+#  old_navfn_behavior: false #默认false，是否复制navfn规划器的结果
+#  lethal_cost: 253 #默认253，致命代价值
+#  neutral_cost: 66 #默认50，中等代价值
+#  cost_factor: 0.55 #默认3.0，代价因子
+#  publish_potential: true #默认true，是否发布costmap的势函数
+#  orientation_mode: 0 #默认0，设置点的方向
+#  orientation_window_size: 1 #默认1，根据orientation_mode指定的位置积分确定窗口方向
+
+RegularGlobalPlanner:
+  epsilon: 1e0  # distance threshold for final waypoint
+  waypoints_per_meter: 10  # number of waypoints per meter for the interpolation of the path
+
+TebLocalPlannerROS:
+  odom_topic: odom
+  map_frame: odom
+
+  # Trajectory
+  teb_autosize: True
+  dt_ref: 0.25
+  dt_hysteresis: 0.1
+  min_samples: 5
+  max_samples: 500
+  global_plan_overwrite_orientation: True
+  allow_init_with_backwards_motion: True
+  max_global_plan_lookahead_dist: 3.0
+  global_plan_viapoint_sep: 0.5
+  global_plan_prune_distance: 5
+  exact_arc_length: False
+  feasibility_check_no_poses: 1
+  publish_feedback: False
+
+  # Robot
+  max_vel_x: 3.0
+  max_vel_x_backwards: 2.0
+  max_vel_y: 0.0
+  max_vel_theta: 1.0
+  acc_lim_x: 2.5
+  acc_lim_y: 0.0
+  acc_lim_theta: 1.5
+  min_turning_radius: 0.5 # omni-drive robot (can turn on place!)
+
+  footprint_model:
+    type: "polygon"
+    vertices:  [[0.3,0.25], [0.3,-0.25], [-0.3, -0.25], [-0.3, 0.25]] # for type "polygon"
+
+  # GoalTolerance
+  xy_goal_tolerance: 0.4
+  yaw_goal_tolerance: 0.4
+  free_goal_vel: False
+  complete_global_plan: True
+
+  # Obstacles
+  min_obstacle_dist: 0.06 # This value must also include our robot radius, since footprint_model is set to "point".
+  inflation_dist: 0.06
+  include_costmap_obstacles: True
+  costmap_obstacles_behind_robot_dist: 2.0
+  obstacle_poses_affected: 25
+  costmap_converter_plugin: "costmap_converter::CostmapToLinesDBSRANSAC"
+  costmap_converter_spin_thread: True
+  costmap_converter_rate: 25
+
+  costmap_converter/CostmapToLinesDBSRANSAC:
+    cluster_max_distance: 0.4
+    cluster_min_pts: 2
+    ransac_inlier_distance: 0.15
+    ransac_min_inliers: 2
+    ransac_no_iterations: 2000
+    ransac_remainig_outliers: 3
+    ransac_convert_outlier_pts: True
+    ransac_filter_remaining_outlier_pts: False
+    convex_hull_min_pt_separation: 0.1
+
+  # Optimization
+  no_inner_iterations: 3
+  no_outer_iterations: 3
+  optimization_activate: true
+  optimization_verbose: False
+  penalty_epsilon: 0.1
+  obstacle_cost_exponent: 4
+  weight_max_vel_x: 3
+  weight_max_vel_y: 0
+  weight_max_vel_theta: 0.5
+  weight_acc_lim_x: 1
+  weight_acc_lim_y: 0
+  weight_acc_lim_theta: 1
+  weight_kinematics_nh: 1000
+  weight_kinematics_forward_drive: 0.0
+  weight_kinematics_turning_radius: 1.0
+  weight_optimaltime: 10 # must be > 0
+  weight_shortest_path: 1.5
+  weight_obstacle: 50
+  weight_inflation: 0.01
+  weight_dynamic_obstacle: 5
+  weight_dynamic_obstacle_inflation: 0.2
+  weight_viapoint: 1
+  weight_adapt_factor: 2
+
+  # Homotopy Class Planner
+  enable_homotopy_class_planning: true
+  enable_multithreading: true
+  max_number_classes: 4
+  selection_cost_hysteresis: 1.0
+  selection_prefer_initial_plan: 0.9
+  selection_obst_cost_scale: 1.0
+  selection_alternative_time_cost: False
+
+  roadmap_graph_no_samples: 15
+  roadmap_graph_area_width: 10
+  roadmap_graph_area_length_scale: 1.0
+  h_signature_prescaler: 0.5
+  h_signature_threshold: 0.1
+  obstacle_heading_threshold: 0.45
+  switching_blocking_period: 0.0
+  viapoints_all_candidates: True
+  delete_detours_backwards: False # Could back
+  max_ratio_detours_duration_best_duration: 3.0
+  visualize_hc_graph: false # Debug
+  visualize_with_time_as_z_axis_scale: false
+
+  # Recovery
+  shrink_horizon_backup: true
+  shrink_horizon_min_duration: 10
+  oscillation_recovery: true
+  oscillation_v_eps: 0.1
+  oscillation_omega_eps: 0.1
+  oscillation_recovery_min_duration: 10
+  oscillation_filter_duration: 10

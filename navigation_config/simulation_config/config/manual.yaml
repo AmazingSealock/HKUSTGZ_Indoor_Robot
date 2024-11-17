@@ -1,0 +1,59 @@
+point_cloud_topic: "/corrected_current_pcd"
+imu_topic: "/livox/imu"
+global_path_topic: "/move_base/RegularGlobalPlanner/global_plan"
+global_waypoint_path_topic: "/move_base/RegularGlobalPlanner/global_waypoint_plan"
+local_path_topic: "/move_base/TebLocalPlannerROS/local_plan"
+velocity_cmd_topic: "/cmd_vel"
+
+story_trajectories:
+  - A_B: "/home/lsy/navigation_ws/src/gbx_navigation/topic_transit/record_trajectory/simulation.csv"
+  - b_C: "/home/lsy/navigation_ws/src/gbx_navigation/topic_transit/record_trajectory/simulation_1.csv"
+
+cloud_filter:
+  min_z: -0.1
+  max_z: 0.1
+  max_radius: 3.0
+  leaf_size: 0.1
+
+local_costmap:
+  footprint: [[0.3,0.25], [0.3,-0.25], [-0.3, -0.25], [-0.3, 0.25]]
+
+  global_frame: map
+  robot_base_frame: base_link
+
+  static:
+    map_topic: /move_base/local_costmap/costmap
+    subscribe_to_updates: true
+
+  #layer definitions
+  obstacles_livox:
+    track_unknown_space: true
+    observation_sources: point_cloud
+    point_cloud: {
+      data_type: PointCloud2,
+      clearing: true,
+      marking: true,
+      topic: /corrected_current_pcd,
+      inf_is_valid: true,
+      min_obstacle_height: 0.0,
+      max_obstacle_height: 2.0,
+      obstacle_range: 3.5,
+      raytrace_range: 3.5
+    }
+
+  update_frequency: 15.0
+  publish_frequency: 10.0
+  transform_tolerance: 0.5
+  track_unknown_space: true
+  width: 4.5
+  height: 4.5
+  resolution: 0.05
+
+  inflation:
+    cost_scaling_factor: 5.0
+    inflation_radius: 0.7
+
+  plugins:
+    - { name: static,              type: "costmap_2d::StaticLayer" }
+    - { name: obstacles_livox,           type: "costmap_2d::ObstacleLayer" }
+    - { name: inflation,                 type: "costmap_2d::InflationLayer" }

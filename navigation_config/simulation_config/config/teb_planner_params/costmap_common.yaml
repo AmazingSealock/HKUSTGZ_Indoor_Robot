@@ -1,0 +1,33 @@
+#robot_radius: 0.3
+footprint: [[0.3,0.25], [0.3,-0.25], [-0.3, -0.25], [-0.3, 0.25]]
+footprint_padding: 0.0
+
+robot_base_frame: base_link
+
+#layer definitions
+static:
+  map_topic: /map
+  subscribe_to_updates: true
+
+inflation_global:
+  cost_scaling_factor: 3.0
+  inflation_radius: 0.5
+
+obstacles_livox:
+  track_unknown_space: true
+  observation_sources: point_cloud
+  point_cloud: {
+    data_type: PointCloud2,
+    clearing: true,
+    marking: true,
+    topic: /corrected_current_pcd,
+    inf_is_valid: true,
+    min_obstacle_height: 0.0,
+    max_obstacle_height: 2.0,
+    obstacle_range: 3.5,
+    raytrace_range: 3.5
+  }
+
+inflation:
+  cost_scaling_factor: 5.0
+  inflation_radius: 0.7

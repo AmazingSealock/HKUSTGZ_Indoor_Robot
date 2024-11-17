@@ -1,0 +1,152 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="lidar_mid360">
+
+    <xacro:property name="M_PI" value="3.1415926535"/>
+    <xacro:property name="update_rate" value="10"/>
+    <xacro:property name="resolution" value="0.01"/>
+    <xacro:property name="noise_mean" value="0.01"/>
+    <xacro:property name="noise_stddev" value="0.00"/>
+    <xacro:property name="laser_min_range" value="0.1"/>
+    <xacro:property name="laser_max_range" value="200"/>
+    <xacro:property name="vertical_fov" value="70.4"/>
+    <xacro:property name="lidar_ros_topic" value="/livox/lidar"/>
+    <xacro:property name="samples" value="10000"/>
+    <xacro:property name="downsample" value="1"/>
+
+    <xacro:property name="imu_update_rate" value="100.0"/>
+    <xacro:property name="imu_gaussian_noise" value="0.01"/>
+    <xacro:property name="imu_ros_topic" value="/livox/imu"/>
+
+    <xacro:macro name="livox_mid360" params="connected_to lidar_name imu_name simulation xyz:='0 0 0' rpy:='0 0 0' ">
+
+        <!-- Lidar is fixed to the connected_to link -->
+        <joint name="${lidar_name}_joint" type="fixed">
+            <origin xyz="${xyz}" rpy="${rpy}"/>
+            <parent link="${connected_to}"/>
+            <child link="${lidar_name}"/>
+        </joint>
+
+        <!-- Lidar link -->
+        <link name="${lidar_name}">
+            <inertial>
+                <mass value="0.114"/>
+                <origin xyz="0 0 0"/>
+                <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                         iyy="0.001" iyz="0.0"
+                         izz="0.001"/>
+            </inertial>
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <mesh filename="package://simulation_config/description/meshes/lidar/livox_mid360.stl" scale="1 1 1"/>
+                </geometry>
+            </visual>
+            <collision>
+                <geometry>
+                    <box>
+                        <size>0.05 0.05 0.05</size>
+                    </box>
+                </geometry>
+            </collision>
+        </link>
+
+        <link name="${imu_name}">
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry >
+                    <box size="0.001 0.001 0.001" />
+                </geometry>
+            </visual>
+            <collision>
+                <origin xyz="0 0 -0.05" rpy="0 0 0" />
+                <geometry >
+                    <box size="0.0001 0.0001 0.0001" />
+                </geometry>
+            </collision>
+            <inertial>
+                <mass value="0.001"/>
+                <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+            </inertial>
+        </link>
+
+        <gazebo reference="${imu_name}">
+            <material>Gazebo/Orange</material>
+            <turnGravityOff>true</turnGravityOff>
+        </gazebo>
+
+        <joint name="${imu_name}_joint" type="fixed">
+            <parent link="${lidar_name}"/>
+            <child link="${imu_name}"/>
+            <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        </joint>
+
+        <xacro:if value="${simulation}">
+            <gazebo reference="${imu_name}">
+                <gravity>true</gravity>
+                <sensor name="imu_sensor" type="imu">
+                    <always_on>true</always_on>
+                    <update_rate>${imu_update_rate}</update_rate>
+                    <visualize>true</visualize>
+                    <topic>/livox/imu</topic>
+                    <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+                        <topicName>${imu_ros_topic}</topicName>
+                        <bodyName>${imu_name}</bodyName>
+                        <updateRateHZ>${imu_update_rate}</updateRateHZ>
+                        <gaussianNoise>${imu_gaussian_noise}</gaussianNoise>
+                        <xyzOffset>0 0 0</xyzOffset>
+                        <rpyOffset>0 0 0</rpyOffset>
+                        <frameName>${imu_name}</frameName>
+                    </plugin>
+                    <pose>0 0 0 0 0 0</pose>
+                </sensor>
+            </gazebo>
+            <gazebo reference="${lidar_name}">
+                <sensor type="ray" name="${lidar_name}">
+                    <pose>0 0 0 0 0 0</pose>
+                    <visualize>true</visualize>
+                    <always_on>True</always_on>
+                    <update_rate>${update_rate}</update_rate>
+                    <!-- This ray plgin is only for visualization. -->
+                    <plugin name="gazebo_ros_laser_controller" filename="liblivox_laser_simulation.so">
+                        <ray>
+                            <scan>
+                                <horizontal>
+                                    <samples>100</samples>
+                                    <resolution>1</resolution>
+                                    <min_angle>-${M_PI}</min_angle>
+                                    <max_angle>${M_PI}</max_angle>
+                                </horizontal>
+                                <vertical>
+                                    <samples>50</samples>
+                                    <resolution>1</resolution>
+                                    <min_angle>-0.261799</min_angle>
+                                    <max_angle>0.261799</max_angle>
+                                </vertical>
+                            </scan>
+                            <range>
+                                <min>${laser_min_range}</min>
+                                <max>${laser_max_range}</max>
+                                <resolution>${resolution}</resolution>
+                            </range>
+                            <noise>
+                                <type>gaussian</type>
+                                <mean>${noise_mean}</mean>
+                                <stddev>${noise_stddev}</stddev>
+                            </noise>
+                        </ray>
+                        <!-- visualize is true could see blue line in gazebo-->
+                        <visualize>False</visualize>
+                        <samples>${samples}</samples>
+                        <downsample>${downsample}</downsample>
+                        <csv_file_name>package://livox_laser_simulation/scan_mode/mid360-real-centr.csv</csv_file_name>
+                        <publish_pointcloud_type>3</publish_pointcloud_type>
+                        <ros_topic>${lidar_ros_topic}</ros_topic>
+                        <frameName>base_link</frameName>
+                    </plugin>
+                </sensor>
+            </gazebo>
+        </xacro:if>
+
+    </xacro:macro>
+</robot>

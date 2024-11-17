@@ -1,0 +1,24 @@
+<launch>
+    <!-- Run the map server -->
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find simulation_config)/map/map.yaml"/>
+
+    <node pkg="tf" type="static_transform_publisher" name="map_to_odom"
+          args="0.0 0.0 0 0 0 0 map odom 100" />
+
+    <node pkg="tf" type="static_transform_publisher" name="camera_to_map"
+          args="0 0 0 0 0 0 base_link camera_init 100" />
+
+    <include file="$(find simulation_config)/launch/lio/mid360_mapping.launch"/>
+    <include file="$(find simulation_config)/launch/lio/mid360_loc_qn.launch"/>
+
+    <!--- Run Move_Base -->
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base"  output="screen">
+        <rosparam file="$(find simulation_config)/config/teb_planner_params/teb_planner_params.yaml" command="load"/>
+<!--        <rosparam file="$(find simulation_config)/config/teb_planner_params/teb_planner_params_carlike.yaml" command="load"/>-->
+        <rosparam file="$(find simulation_config)/config/teb_planner_params/move_base.yaml" command="load"/>
+        <rosparam file="$(find simulation_config)/config/teb_planner_params/costmap_common.yaml" command="load" ns="global_costmap"/>
+        <rosparam file="$(find simulation_config)/config/teb_planner_params/costmap_common.yaml" command="load" ns="local_costmap"/>
+        <rosparam file="$(find simulation_config)/config/teb_planner_params/costmap_global.yaml" command="load" ns="global_costmap"/>
+        <rosparam file="$(find simulation_config)/config/teb_planner_params/costmap_local.yaml" command="load" ns="local_costmap"/>
+    </node>
+</launch>

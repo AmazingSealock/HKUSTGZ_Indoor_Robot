@@ -1,0 +1,29 @@
+<launch>
+<!-- Add gazebo world   -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find simulation_config)/worlds/robocup_home.world"/>
+<!--        <arg name="world_name" value="$(find simulation_config)/worlds/E3_121.world"/>-->
+        <arg name="paused" value="false"/>
+        <arg name="use_sim_time" value="true"/>
+        <arg name="gui" value="true"/>
+        <arg name="headless" value="false"/>
+        <arg name="debug" value="false"/>
+<!--        <arg name="verbose" value="false"/>-->
+    </include>
+
+    <!-- these are the arguments you can pass this launch file, for example paused:=true -->
+    <arg name="model" default="$(find simulation_config)/description/urdf/ranger_livox.xacro"/>
+
+    <!-- Load the URDF into the ROS Parameter Server -->
+    <param name="robot_description" command="$(find xacro)/xacro '$(arg model)'" />
+
+    <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
+    <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+          args="-urdf -model ranger_livox -param robot_description"/>
+
+<!--    <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"-->
+<!--          args="-urdf -x -1.0 -y -1.0 -model ranger_livox -param robot_description"/>-->
+
+    <!-- ros_control motoman launch file -->
+    <include file="$(find ranger_mini_control)/launch/robot_control_v2.launch"/>
+</launch>

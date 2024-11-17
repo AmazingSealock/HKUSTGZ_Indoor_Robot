@@ -1,0 +1,54 @@
+<launch>
+    <arg name="planner" default="teb_planner"/>
+
+    <!-- Run the map server -->
+    <arg name="map_file" default="$(find real_v1_config)/map/2F_E.yaml"/>
+    <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)"/>
+
+    <node pkg="tf" type="static_transform_publisher" name="map_to_odom"
+          args="0 0 0 0 0 0 map odom 100" />
+
+    <node pkg="tf" type="static_transform_publisher" name="camera_to_odom"
+          args="0 0 0 0 0 0 base_link camera_init 100" />
+
+    <include file="$(find real_v1_config)/launch/lio/ouster_os1_mapping.launch"/>
+    <include file="$(find real_v1_config)/launch/lio/ouster_os1_loc_qn.launch"/>
+
+    <arg name="model" default="$(find real_v1_config)/urdf/ranger_ouster.xacro"/>
+
+    <!-- Load the URDF into the ROS Parameter Server -->
+    <param name="robot_description" command="$(find xacro)/xacro '$(arg model)'" />
+
+    <!-- convert joint states to TF transforms for rviz, etc -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher"
+          type="robot_state_publisher" respawn="false" output="screen">
+    </node>
+
+    <!--- Run Move_Base -->
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base"  output="screen">
+        <rosparam file="$(find real_v1_config)/config/$(arg planner)_params/$(arg planner)_params.yaml" command="load"/>
+        <rosparam file="$(find real_v1_config)/config/$(arg planner)_params/move_base.yaml" command="load"/>
+        <rosparam file="$(find real_v1_config)/config/$(arg planner)_params/costmap_common.yaml" command="load" ns="global_costmap"/>
+        <rosparam file="$(find real_v1_config)/config/$(arg planner)_params/costmap_common.yaml" command="load" ns="local_costmap"/>
+        <rosparam file="$(find real_v1_config)/config/$(arg planner)_params/costmap_global.yaml" command="load" ns="global_costmap"/>
+        <rosparam file="$(find real_v1_config)/config/$(arg planner)_params/costmap_local.yaml" command="load" ns="local_costmap"/>
+    </node>
+
+<!--     <arg name="min_z" value="-0.5" /> -->
+<!--     <arg name="max_z" value="0.5" /> -->
+<!--     <arg name="max_radius" value="4.0" /> -->
+<!--     <arg name="input_topic" value="/cloud_registered" /> -->
+<!--     <arg name="output_topic" value="/cloud_registered_filter" /> -->
+<!--     <arg name="frequency" value="10.0" /> -->
+<!--     <arg name="leaf_size" value="0.05" /> -->
+
+<!--     <node name="cloud_transit" pkg="topic_transit" type="cloud_transit" output="screen"> -->
+<!--         <param name="min_z" value="$(arg min_z)" /> -->
+<!--         <param name="max_z" value="$(arg max_z)" /> -->
+<!--         <param name="max_radius" value="$(arg max_radius)" /> -->
+<!--         <param name="input_topic" value="$(arg input_topic)" /> -->
+<!--         <param name="output_topic" value="$(arg output_topic)" /> -->
+<!--         <param name="frequency" value="$(arg frequency)" /> -->
+<!--         <param name="leaf_size" value="$(arg leaf_size)" /> -->
+<!--     </node> -->
+</launch>

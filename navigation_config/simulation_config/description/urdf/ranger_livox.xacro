@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="ranger_livox">
+    <xacro:arg name="use_simulation" default="true"/>
+    <xacro:include filename="$(find simulation_config)/description/urdf/livox_mid360.urdf.xacro"/>
+    <xacro:include filename="$(find simulation_config)/description/urdf/ranger_mini_gazebo.xacro"/>
+
+    <xacro:livox_mid360 connected_to="base_link" simulation="true" lidar_name="livox_lidar" imu_name="livox_imu"
+                        xyz="0.0 0.0 0.055" rpy="0.0 0.0 0.0"/>
+</robot>

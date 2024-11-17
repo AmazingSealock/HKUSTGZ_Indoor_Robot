@@ -1,0 +1,5 @@
+<launch>
+    <node name="gbx_manual" pkg="gbx_manual" type="gbx_manual_node" output="screen">
+        <rosparam file="$(find simulation_config)/config/manual.yaml" command="load"/>
+    </node>
+</launch>

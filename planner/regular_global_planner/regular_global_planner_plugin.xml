@@ -1,0 +1,9 @@
+<library path="lib/libregular_global_planner">
+  <class
+    name="regular_global_planner/RegularGlobalPlanner"
+    type="regular_global_planner::RegularGlobalPlanner"
+    base_class_type="nav_core::BaseGlobalPlanner">
+
+    <description>This is a global planner plugin for regular_global_planner.</description>
+  </class>
+</library>

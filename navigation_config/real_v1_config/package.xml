@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>real_v1_config</name>
+  <version>0.0.0</version>
+  <description>The real_v1_config package</description>
+  <maintainer email="lsy@todo.todo">lsy</maintainer>
+  <license>TODO</license>
+  <buildtool_depend>catkin</buildtool_depend>
+</package>
