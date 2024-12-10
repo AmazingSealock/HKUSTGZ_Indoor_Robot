@@ -1,6 +1,6 @@
-# VIP_ROBOT
+# HKUSTGZ_Indoor_Robot
 
-update on 17/11/2024
+update on 10/12/2024
 
 ## Related Repository
 > Complete the navigation function with lidar positioning and ros_navigation
@@ -21,6 +21,8 @@ update on 17/11/2024
 ## Videos
 
 > [Testing Indoor](https://www.bilibili.com/video/BV1svU7YXECV/?vd_source=1fa8466b3aa53e37bc9d2f8fa7690ac7)
+
+> [Indoor Running Video](https://www.bilibili.com/video/BV1D2q5YtEcT/)
 
 ## Prerequisites
 + `C++` >= 17

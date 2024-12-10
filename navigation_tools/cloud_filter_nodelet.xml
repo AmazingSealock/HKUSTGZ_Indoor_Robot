@@ -1,0 +1,17 @@
+<library path="lib/libcloud_filter_nodelet">
+    <class name="cloud_filter/IntensityFilterNodelet"
+           type="cloud_filter::IntensityFilterNodelet"
+           base_class_type="nodelet::Nodelet">
+        <description>
+            A nodelet for filtering point cloud based on intensity.
+        </description>
+    </class>
+
+    <class name="cloud_filter/CloudTransitNodelet"
+           type="cloud_filter::CloudTransitNodelet"
+           base_class_type="nodelet::Nodelet">
+        <description>
+            A nodelet for filtering point cloud data
+        </description>
+    </class>
+</library>

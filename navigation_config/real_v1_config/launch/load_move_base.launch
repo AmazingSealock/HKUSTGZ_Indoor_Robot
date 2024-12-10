@@ -8,8 +8,8 @@
     <node pkg="tf" type="static_transform_publisher" name="map_to_odom"
           args="0 0 0 0 0 0 map odom 100" />
 
-    <node pkg="tf" type="static_transform_publisher" name="camera_to_odom"
-          args="0 0 0 0 0 0 base_link camera_init 100" />
+    <node pkg="tf" type="static_transform_publisher" name="camera_to_base"
+          args="0 0 0 0 0 0 base_link camera_link 10" />
 
     <include file="$(find real_v1_config)/launch/lio/ouster_os1_mapping.launch"/>
     <include file="$(find real_v1_config)/launch/lio/ouster_os1_loc_qn.launch"/>
@@ -34,21 +34,35 @@
         <rosparam file="$(find real_v1_config)/config/$(arg planner)_params/costmap_local.yaml" command="load" ns="local_costmap"/>
     </node>
 
-<!--     <arg name="min_z" value="-0.5" /> -->
-<!--     <arg name="max_z" value="0.5" /> -->
-<!--     <arg name="max_radius" value="4.0" /> -->
-<!--     <arg name="input_topic" value="/cloud_registered" /> -->
-<!--     <arg name="output_topic" value="/cloud_registered_filter" /> -->
-<!--     <arg name="frequency" value="10.0" /> -->
-<!--     <arg name="leaf_size" value="0.05" /> -->
+    <arg name="min_z" value="-0.2" />
+    <arg name="max_z" value="0.2" />
+    <arg name="max_radius" value="0.5" />
+    <arg name="input_topic" value="/corrected_current_pcd" />
+    <arg name="output_topic" value="/corrected_current_pcd_manual" />
+    <arg name="frequency" value="10" />
+    <arg name="leaf_size" value="0.3" />
+    <arg name="use_ground_filter" value="False" />
+    <arg name="publish_ground" value="False" />
+    <arg name="use_voxel_filter" value="True" />
+    <arg name="use_radius_filter" value="False" />
 
-<!--     <node name="cloud_transit" pkg="topic_transit" type="cloud_transit" output="screen"> -->
-<!--         <param name="min_z" value="$(arg min_z)" /> -->
-<!--         <param name="max_z" value="$(arg max_z)" /> -->
-<!--         <param name="max_radius" value="$(arg max_radius)" /> -->
-<!--         <param name="input_topic" value="$(arg input_topic)" /> -->
-<!--         <param name="output_topic" value="$(arg output_topic)" /> -->
-<!--         <param name="frequency" value="$(arg frequency)" /> -->
-<!--         <param name="leaf_size" value="$(arg leaf_size)" /> -->
-<!--     </node> -->
+<!--  Just for test-->
+<!--     <node pkg="nodelet" type="nodelet" name="cloud_mgr" -->
+<!--       output="screen" required="true" args="manager"/> -->
+
+    <node pkg="nodelet" type="nodelet" name="cloud_transit_nodelet"
+          args="load cloud_filter/CloudTransitNodelet /ouster/os_nodelet_mgr">
+        <param name="min_z" value="$(arg min_z)" />
+        <param name="max_z" value="$(arg max_z)" />
+        <param name="max_radius" value="$(arg max_radius)" />
+        <param name="input_topic" value="$(arg input_topic)" />
+        <param name="output_topic" value="$(arg output_topic)" />
+        <param name="frequency" value="$(arg frequency)" />
+        <param name="leaf_size" value="$(arg leaf_size)" />
+        <param name="use_ground_filter" value="$(arg use_ground_filter)" />
+        <param name="publish_ground" value="$(arg publish_ground)" />
+        <param name="use_voxel_filter" value="$(arg use_voxel_filter)" />
+        <param name="use_radius_filter" value="$(arg use_radius_filter)" />
+    </node>
+
 </launch>

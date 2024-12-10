@@ -1,0 +1,16 @@
+<launch>
+
+	<arg name="rviz" default="true" />
+	<arg name="lidar" default="livox" /> <!-- ouster, velodyne, livox -->
+
+	<!-- visualize -->
+	<!-- <node if="$(arg rviz)" pkg="rviz" type="rviz" name="rviz_lio" args="-d $(find fast_lio_sam_qn)/config/lio_rviz.rviz" launch-prefix="nice"/> -->
+	<node if="$(arg rviz)" pkg="rviz" type="rviz" name="rviz_sam" args="-d $(find real_v2_config)/rviz/sam_rviz.rviz" launch-prefix="nice"/>
+
+	<include file="$(find real_v2_config)/launch/lio/mid360_mapping.launch"/>
+
+	<!-- run fast_lio_sam_qn -->
+	<rosparam command="load" file="$(find real_v2_config)/config/lio/mid360_fast_lio_sam_qn.yaml" />
+	<node pkg="fast_lio_sam_qn" type="fast_lio_sam_qn_node" name="fast_lio_sam_qn_node" output="screen"/> 
+
+</launch>

@@ -123,12 +123,12 @@ bool RegularGlobalPlanner::makePlan(const geometry_msgs::PoseStamped& start, con
    {
      double min_distance = std::numeric_limits<double>::max();
      size_t nearest_waypoint_index = 0;
-
+     ROS_INFO_STREAM("start X = "<< start.pose.position.x << "; Y =" << start.pose.position.y);
      for (size_t i = 0; i < waypoints_.size(); ++i) {
        double dx = waypoints_[i].pose.position.x - start.pose.position.x;
        double dy = waypoints_[i].pose.position.y - start.pose.position.y;
        double distance = std::sqrt(dx * dx + dy * dy);
-
+       ROS_INFO_STREAM("distance = " << distance);
        if (distance < min_distance) {
          min_distance = distance;
          nearest_waypoint_index = i;
@@ -147,7 +147,7 @@ bool RegularGlobalPlanner::makePlan(const geometry_msgs::PoseStamped& start, con
   if (it != checkWaypointArrive_.end())
   {
     first_false_index = std::distance(checkWaypointArrive_.begin(), it);
-    ROS_INFO_STREAM("First index with false value " << first_false_index);
+    // ROS_INFO_STREAM("First index with false value " << first_false_index);
   } else {
     ROS_INFO("Arrive !!");
     path_.poses.push_back(start);
@@ -155,7 +155,7 @@ bool RegularGlobalPlanner::makePlan(const geometry_msgs::PoseStamped& start, con
     return true;
   }
 
-  double threshold_distance = 0.5;
+  double threshold_distance = 1.0;
   auto& first_point = waypoints_[first_false_index];
   auto& second_point = waypoints_[first_false_index + 1];
   if (first_false_index + 1 < waypoints_.size())
@@ -230,7 +230,7 @@ void RegularGlobalPlanner::waypointCallback(const geometry_msgs::PointStamped::C
   waypoints_.back().header.frame_id = "map";
   // create and publish markers
   createAndPublishMarkersFromPath(waypoints_);
-
+  ROS_INFO_STREAM("waypoints size:=" << waypoints_.size());
   if (waypoints_.size() < 2)
     return;
 
@@ -458,9 +458,9 @@ void RegularGlobalPlanner::createAndPublishMarkersFromPath(const std::vector<geo
   marker.ns = "/move_base/waypoint_global_planner";
   marker.type = visualization_msgs::Marker::SPHERE;
   marker.action = visualization_msgs::Marker::DELETEALL;
-  marker.scale.x = 0.2;
-  marker.scale.y = 0.2;
-  marker.scale.z = 0.2;
+  marker.scale.x = 2;
+  marker.scale.y = 2;
+  marker.scale.z = 2;
   marker.color.a = 1.0;
   marker.color.r = 1.0;
   marker.color.g = 0.0;

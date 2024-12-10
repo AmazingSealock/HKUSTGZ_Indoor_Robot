@@ -2,7 +2,7 @@
 <launch>
     <arg name="port_name" default="can0"/>
     <arg name="robot_model" default="ranger_mini_v2"/>
-    <arg name="odom_frame" default="odom"/>
+    <arg name="odom_frame" default="map"/>
     <arg name="base_frame" default="base_link" />
     <arg name="update_rate" default="50" />
     <arg name="odom_topic_name" default="odom" />
@@ -22,7 +22,7 @@
     <arg name="output_topic" value="/ranger/cmd_vel" />
     <arg name="frequency" value="10.0" />
 
-    <node name="cmd_transit" pkg="topic_transit" type="cmd_transit" output="screen">
+    <node name="cmd_transit" pkg="navigation_tools" type="cmd_transit" output="screen">
         <param name="input_topic" value="$(arg input_topic)" />
         <param name="output_topic" value="$(arg output_topic)" />
         <param name="frequency" value="$(arg frequency)" />

@@ -1,14 +1,14 @@
 base_global_planner: "regular_global_planner/RegularGlobalPlanner"
-planner_frequency: 5.0
-planner_patience: 1.0
+planner_frequency: 10.0
+planner_patience: 60
 
 base_local_planner: "dwa_local_planner/DWAPlannerROS"
 
 controller_frequency: 15.0
-controller_patience: 3.0
-controller_max_retries: 10
+controller_patience: 60.0
+controller_max_retries: 1e10
 
-recovery_patience: 3.0
+recovery_patience: 5.0
 recovery_behaviour_enabled: true #TODO(4yang): should add some useful recovery_behaviors
 
 recovery_behaviors:
@@ -18,11 +18,12 @@ recovery_behaviors:
     type: 'clear_costmap_recovery/ClearCostmapRecovery'
 
 conservative_reset:
-  reset_distance: 1.0
-  layer_names: [ 'obstacles_layer' ]
+  reset_distance: 5.0
+  layer_names: [ 'obstacles_ouster' ]
 aggressive_reset:
-  reset_distance: 1.0
-  layer_names: [ 'inflation_layer' ]
+  reset_distance: 5.0
+  layer_names: [ 'obstacles_ouster' ]
 
-oscillation_timeout: 2.5
+# set oscillation_timeout < 0.0 while disable it
+oscillation_timeout: -1.0
 oscillation_distance: 0.2

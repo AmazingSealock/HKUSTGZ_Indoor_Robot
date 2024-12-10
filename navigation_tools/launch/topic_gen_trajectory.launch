@@ -1,0 +1,8 @@
+<launch>
+    <node name="topic_gen_trajectory" pkg="navigation_tools" type="topic_gen_trajectory" output="screen">
+<!--         <param name="csv_file_path" value="/home/lsy/navigation_ws/src/gbx_navigation/navigation_tools/record_trajectory/simulation.csv" /> -->
+        <param name="csv_file_path" value="/home/vipbot/ros_ws/navigation_ws/src/gbx_navigation/navigation_config/real_v1_config/trajectory/2F_sl_C1W_3.csv"/>
+<!--         <param name="csv_file_path" value="/home/vipbot/ros_ws/navigation_ws/src/gbx_navigation/navigation_tools/record_trajectory/2F.csv"/> -->
+<!--             <param name="csv_file_path" value="/home/vipbot/ros_ws/navigation_ws/src/gbx_navigation/navigation_tools/record_trajectory/2F_E.csv"/> -->
+    </node>
+</launch>

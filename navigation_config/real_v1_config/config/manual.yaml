@@ -7,63 +7,71 @@ velocity_cmd_topic: "/cmd_vel"
 
 story_trajectories:
   - E3_121: "/home/vipbot/ros_ws/navigation_ws/src/gbx_navigation/navigation_config/real_v1_config/trajectory/E3_121.csv"
-  - 2F_E: "/home/vipbot/ros_ws/navigation_ws/src/gbx_navigation/navigation_config/real_v1_config/trajectory/2F_E.csv"
-  - 2F_0_1: "/home/vipbot/ros_ws/navigation_ws/src/gbx_navigation/navigation_config/real_v1_config/trajectory/2F_0_1.csv"
-  - 2F_1_3: "/home/vipbot/ros_ws/navigation_ws/src/gbx_navigation/navigation_config/real_v1_config/trajectory/2F_1_3.csv"
-  - 2F_3_4: "/home/vipbot/ros_ws/navigation_ws/src/gbx_navigation/navigation_config/real_v1_config/trajectory/2F_3_4.csv"
-  - 2F_4_5: "/home/vipbot/ros_ws/navigation_ws/src/gbx_navigation/navigation_config/real_v1_config/trajectory/2F_4_5.csv"
-  - 2F_5_6: "/home/vipbot/ros_ws/navigation_ws/src/gbx_navigation/navigation_config/real_v1_config/trajectory/2F_5_6.csv"
-  - 2F_6_7: "/home/vipbot/ros_ws/navigation_ws/src/gbx_navigation/navigation_config/real_v1_config/trajectory/2F_6_7.csv"
+  - E3_121_long: "/home/vipbot/ros_ws/navigation_ws/src/gbx_navigation/navigation_config/real_v1_config/trajectory/E3_121_long.csv"
+  - 2F_sl_go: "/home/vipbot/ros_ws/navigation_ws/src/gbx_navigation/navigation_config/real_v1_config/trajectory/2F_sl_go.csv"
+  - 2F_sl_back: "/home/vipbot/ros_ws/navigation_ws/src/gbx_navigation/navigation_config/real_v1_config/trajectory/2F_sl_back.csv"
+#  - A: "/home/vipbot/ros_ws/navigation_ws/src/gbx_navigation/navigation_config/real_v1_config/trajectory/2F_sl_back.csv"
+  - A: "/home/vipbot/ros_ws/navigation_ws/src/gbx_navigation/navigation_config/real_v1_config/trajectory/2F_sl_C1W_3.csv"
+  - 2F_sl_C1W_back: "/home/vipbot/ros_ws/navigation_ws/src/gbx_navigation/navigation_config/real_v1_config/trajectory/2F_sl_C1W_4.csv"
 
-cloud_filter:
-  min_z: -0.1
-  max_z: 0.1
-  max_radius: 3.0
-  leaf_size: 0.1
+delivery_point:
+  - "1": [0.0, 0.0, 0.0]
+  - "2": [-16.0, 75.7, 0.0]
+  - "3": [-7.50, -103.4, 0.0]
+  - "4": [-59.5, -50.4, 0.0]
+  - "5": [-143.9, -59.2, 0.0]
+  - "6": [-125.0, -0.65, 0.0]
+  - "7": [-44.9, 85.3, 0.0]
 
-local_costmap:
-  footprint: [[0.3,0.25], [0.3,-0.25], [-0.3, -0.25], [-0.3, 0.25]]
-
-  global_frame: map
-  robot_base_frame: base_link
-
-  static:
-    map_topic: /move_base/local_costmap/costmap
-    subscribe_to_updates: true
-
-  #layer definitions
-  obstacles_livox:
-    track_unknown_space: true
-    observation_sources: point_cloud
-    point_cloud: {
-      data_type: PointCloud2,
-      clearing: true,
-      marking: true,
-      topic: /corrected_current_pcd,
-      inf_is_valid: true,
-      min_obstacle_height: 0.0,
-      max_obstacle_height: 1.0,
-      obstacle_range: 200.0,
-      raytrace_range: 200.0
-    }
-    static_map: false
-    rolling_window: true
-
-  update_frequency: 30.0
-  publish_frequency: 20.0
-  transform_tolerance: 0.05
-  track_unknown_space: true
-  width: 3
-  height: 3
-  resolution: 0.05
-  static_map: false
-  rolling_window: true
-
-  inflation:
-    cost_scaling_factor: 5.0
-    inflation_radius: 0.5
-
-  plugins:
-    - { name: static,              type: "costmap_2d::StaticLayer" }
-    - { name: inflation,                 type: "costmap_2d::InflationLayer" }
+#cloud_filter:
+#  min_z: -0.1
+#  max_z: 0.1
+#  max_radius: 3.0
+#  leaf_size: 0.1
+#
+#local_costmap:
+#  footprint: [[0.3,0.25], [0.3,-0.25], [-0.3, -0.25], [-0.3, 0.25]]
+#
+#  global_frame: map
+#  robot_base_frame: base_link
+#
+#  static:
+#    map_topic: /move_base/local_costmap/costmap
+#    subscribe_to_updates: true
+#
+#  #layer definitions
+#  obstacles_livox:
+#    track_unknown_space: true
+#    observation_sources: point_cloud
+#    point_cloud: {
+#      data_type: PointCloud2,
+#      clearing: true,
+#      marking: true,
+#      topic: /corrected_current_pcd,
+#      inf_is_valid: true,
+#      min_obstacle_height: 0.0,
+#      max_obstacle_height: 1.0,
+#      obstacle_range: 200.0,
+#      raytrace_range: 200.0
+#    }
+#    static_map: false
+#    rolling_window: true
+#
+#  update_frequency: 30.0
+#  publish_frequency: 20.0
+#  transform_tolerance: 0.05
+#  track_unknown_space: true
+#  width: 3
+#  height: 3
+#  resolution: 0.05
+#  static_map: false
+#  rolling_window: true
+#
+#  inflation:
+#    cost_scaling_factor: 5.0
+#    inflation_radius: 0.5
+#
+#  plugins:
+#    - { name: static,              type: "costmap_2d::StaticLayer" }
+#    - { name: inflation,                 type: "costmap_2d::InflationLayer" }
   #    - { name: obstacles_livox,           type: "costmap_2d::ObstacleLayer" }

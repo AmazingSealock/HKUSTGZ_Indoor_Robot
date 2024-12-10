@@ -1,0 +1,19 @@
+<launch>
+    <arg name="min_z" value="-0.1" />
+    <arg name="max_z" value="0.1" />
+    <arg name="max_radius" value="3.0" />
+    <arg name="input_topic" value="/cloud_registered" />
+    <arg name="output_topic" value="/cloud_registered_filter" />
+    <arg name="frequency" value="10.0" />
+    <arg name="leaf_size" value="0.1" />
+
+    <node name="cloud_transit" pkg="navigation_tools" type="cloud_transit" output="screen">
+        <param name="min_z" value="$(arg min_z)" />
+        <param name="max_z" value="$(arg max_z)" />
+        <param name="max_radius" value="$(arg max_radius)" />
+        <param name="input_topic" value="$(arg input_topic)" />
+        <param name="output_topic" value="$(arg output_topic)" />
+        <param name="frequency" value="$(arg frequency)" />
+        <param name="leaf_size" value="$(arg leaf_size)" />
+    </node>
+</launch>

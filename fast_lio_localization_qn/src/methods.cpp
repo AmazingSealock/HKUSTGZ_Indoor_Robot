@@ -155,8 +155,8 @@ Eigen::Matrix4d FastLioLocalizationQnClass::coarseToFineKeyToKey(const PosePcd& 
       }
       else
       {
-        m_enable_quatro = false;
-        ROS_INFO_STREAM("change mode to only nano_gicp!");
+        // m_enable_quatro = false;
+        // ROS_INFO_STREAM("change mode to only nano_gicp!");
       }
     }
     else if_converged = false;

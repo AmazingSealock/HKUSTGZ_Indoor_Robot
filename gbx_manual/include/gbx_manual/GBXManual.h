@@ -35,6 +35,8 @@
 #include "navigation_msgs/pub_trajectory.h"
 #include "ranger_msgs/SystemState.h"
 
+#include "gbx_manual/NavigationMonitor.h"
+
 namespace gbx_manual
 {
 enum class NavigationState
@@ -46,11 +48,19 @@ enum class NavigationState
   ARRIVE
 };
 
+struct TrajectoryPoint {
+  int index;
+  double x;
+  double y;
+  double z;
+};
+
 class TrajectoryPublisher {
 public:
   TrajectoryPublisher(ros::NodeHandle& nh, const std::map<std::string, std::string>& csv_paths)
       : nh_(nh), csv_paths_(csv_paths) {
     pub_ = nh_.advertise<geometry_msgs::PointStamped>("/clicked_point", 10);
+    markerPub_ = nh_.advertise<visualization_msgs::MarkerArray>("/trajectory_points", 1, true);
     readAllCSVFiles();
   }
 
@@ -63,14 +73,48 @@ public:
     auto it = trajectories_.find(path_name);
     if (it != trajectories_.end()) {
       const auto& points = it->second;
-      for (const auto& point : points) {
+      visualization_msgs::MarkerArray marker_array;
+
+      for (size_t i = 0; i < points.size(); ++i) {
         geometry_msgs::PointStamped point_msg;
         point_msg.header.stamp = ros::Time::now();
         point_msg.header.frame_id = "map";
-        point_msg.point = point;
+        point_msg.point = points[i];
         pub_.publish(point_msg);
+
+        visualization_msgs::Marker point_marker;
+        point_marker.header.frame_id = "map";
+        point_marker.header.stamp = ros::Time::now();
+        point_marker.ns = "trajectory_points";
+        point_marker.id = i;
+        point_marker.type = visualization_msgs::Marker::SPHERE;
+        point_marker.action = visualization_msgs::Marker::ADD;
+        point_marker.pose.position = points[i];
+        point_marker.pose.orientation.w = 1.0;
+        point_marker.scale.x = 0.3;
+        point_marker.scale.y = 0.3;
+        point_marker.scale.z = 0.3;
+        point_marker.color.r = 0.0;
+        point_marker.color.g = 0.0;
+        point_marker.color.b = 1.0;
+        point_marker.color.a = 1.0;
+        marker_array.markers.push_back(point_marker);
+
+        visualization_msgs::Marker text_marker = point_marker;
+        text_marker.id = i + 10000;
+        text_marker.type = visualization_msgs::Marker::TEXT_VIEW_FACING;
+        text_marker.text = std::to_string(i);
+        text_marker.pose.position.z += 0.3;
+        text_marker.scale.z = 0.3;
+        text_marker.color.r = 1.0;
+        text_marker.color.g = 1.0;
+        text_marker.color.b = 1.0;
+        marker_array.markers.push_back(text_marker);
+
         ros::Duration(0.25).sleep();
       }
+
+      markerPub_.publish(marker_array);
     } else {
       ROS_WARN("Path name %s not found in the CSV paths map.", path_name.c_str());
     }
@@ -79,6 +123,7 @@ public:
 private:
   ros::NodeHandle nh_;
   ros::Publisher pub_;
+  ros::Publisher markerPub_;
   std::map<std::string, std::string> csv_paths_;
   std::map<std::string, std::vector<geometry_msgs::Point>> trajectories_;
 
@@ -95,20 +140,42 @@ private:
     std::string line;
     std::vector<geometry_msgs::Point> points;
 
+    std::getline(file, line);
+    if (line.find("index") != std::string::npos) {
+    } else {
+      file.seekg(0);
+    }
+
     while (std::getline(file, line) && ros::ok()) {
       std::istringstream ss(line);
-      std::string x_str, y_str, z_str;
+      std::string index_str, x_str, y_str, z_str;
 
-      if (std::getline(ss, x_str, ',') && std::getline(ss, y_str, ',') && std::getline(ss, z_str, ',')) {
+      if (std::getline(ss, index_str, ',') &&
+          std::getline(ss, x_str, ',') &&
+          std::getline(ss, y_str, ',') &&
+          std::getline(ss, z_str, ',')) {
         geometry_msgs::Point point;
         point.x = std::stof(x_str);
         point.y = std::stof(y_str);
         point.z = std::stof(z_str);
         points.push_back(point);
+      } else {
+        ss.clear();
+        ss.str(line);
+        if (std::getline(ss, x_str, ',') &&
+            std::getline(ss, y_str, ',') &&
+            std::getline(ss, z_str, ',')) {
+          geometry_msgs::Point point;
+          point.x = std::stof(x_str);
+          point.y = std::stof(y_str);
+          point.z = std::stof(z_str);
+          points.push_back(point);
+        }
       }
     }
 
     trajectories_[path_name] = points;
+    ROS_INFO("Loaded %zu points from %s", points.size(), csv_file_path.c_str());
   }
 };
 
@@ -175,6 +242,7 @@ private:
   NavigationState currentState_;
 
   std::unique_ptr<TrajectoryPublisher> trajectoryPublisher_;
+  std::unique_ptr<NavigationMonitor> navigationMonitor_;
 
 // For cloud
   double cloudMinZ_, cloudMaxZ_, cloudRadius_, cloudLeafSize_;

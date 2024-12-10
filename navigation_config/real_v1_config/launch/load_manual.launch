@@ -1,5 +1,5 @@
 <launch>
-    <arg name="map_name" default="E3_121"/>  <!-- 可选值: 2F_whole, E3_121, 2F_E -->
+    <arg name="map_name" default="2f_whole_final"/>  <!-- 可选值: 2F_whole, E3_121, 2F_E -->
     <arg name="planner" default="dwa_planner"/>  <!-- 可选值: teb_planner, dwa_planner -->
     <include file="$(find real_v1_config)/launch/load_move_base.launch">
         <arg name="map_file" value="$(find real_v1_config)/map/$(arg map_name).yaml"/>
@@ -10,6 +10,11 @@
            value="/home/vipbot/ros_ws/navigation_ws/src/gbx_navigation/navigation_config/real_v1_config/bag/$(arg map_name).bag"/>
 
     <include file="$(find real_v1_config)/launch/ranger_mini_v2.launch"/>
+
+<!--     <include file="$(find real_v1_config)/launch/lio/driver.launch"/> -->
+     <include file="$(find real_v1_config)/launch/record_bag/wit_imu.launch"/>
+     <include file="$(find real_v1_config)/launch/lio/driver.launch"/>
+     <include file="$(find real_v1_config)/launch/cloud_intensity_filter.launch"/>
 
     <node name="gbx_manual" pkg="gbx_manual" type="gbx_manual_node" output="screen">
         <rosparam file="$(find real_v1_config)/config/manual.yaml" command="load"/>

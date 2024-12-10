@@ -39,8 +39,15 @@ include_directories(
         ${catkin_INCLUDE_DIRS}
         ${PCL_INCLUDE_DIRS})
 
-add_library(gbx_manual src/GBXManual.cpp)
+add_library(gbx_manual
+        src/GBXManual.cpp
+        src/NavigationMonitor.cpp
+        )
+
 target_link_libraries(gbx_manual ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 
-add_executable(gbx_manual_node src/GBXManual.cpp src/main.cpp)
+add_executable(gbx_manual_node
+        src/main.cpp
+        src/GBXManual.cpp
+        src/NavigationMonitor.cpp)
 target_link_libraries(gbx_manual_node ${catkin_LIBRARIES} ${PCL_LIBRARIES})

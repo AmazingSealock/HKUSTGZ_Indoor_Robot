@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- 启动 nodelet manager -->
+<!--     <node pkg="nodelet" type="nodelet" name="intensity_filter_manager" -->
+<!--           args="manager" output="screen"/> -->
+
+    <arg name="intensity_threshold" default="3000.0" doc="minimum intensity value to keep points"/>
+    <arg name="input_points_topic" default="/ouster/points" doc="input point cloud topic"/>
+    <arg name="output_points_topic" default="/ouster/points_filtered" doc="filtered point cloud topic"/>
+
+    <node pkg="nodelet" type="nodelet" name="intensity_filter_nodelet"
+          args="load cloud_filter/IntensityFilterNodelet /ouster/os_nodelet_mgr"
+          output="screen">
+        <param name="intensity_threshold" value="$(arg intensity_threshold)"/>
+        <param name="input_topic" value="$(arg input_points_topic)"/>
+        <param name="output_topic" value="$(arg output_points_topic)"/>
+    </node>
+</launch>

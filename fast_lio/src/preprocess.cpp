@@ -192,10 +192,10 @@ void Preprocess::oust64_handler(const sensor_msgs::PointCloud2::ConstPtr &msg)
 
   pcl::CropBox<pcl::PointXYZI> cropBoxFilter;
   // 设置裁剪区域的参数
-  // Eigen::Vector4f minPoint(-20.0, -20.0, -6.0, 1.0); // 裁剪区域的最小点
-  // Eigen::Vector4f maxPoint(20.0, 20.0, 6.0, 1.0);    // 裁剪区域的最大点
-  Eigen::Vector4f minPoint(-100.0, -100.0, -100.0, 1.0); // 裁剪区域的最小点
-  Eigen::Vector4f maxPoint(100.0, 100.0, 100.0, 1.0);    // 裁剪区域的最大点
+  Eigen::Vector4f minPoint(-20.0, -20.0, -6.0, 1.0); // 裁剪区域的最小点
+  Eigen::Vector4f maxPoint(20.0, 20.0, 6.0, 1.0);    // 裁剪区域的最大点
+   // Eigen::Vector4f minPoint(-100.0, -100.0, -100.0, 1.0); // 裁剪区域的最小点
+   // Eigen::Vector4f maxPoint(100.0, 100.0, 100.0, 1.0);    // 裁剪区域的最大点
   cropBoxFilter.setMin(minPoint);
   cropBoxFilter.setMax(maxPoint);
 

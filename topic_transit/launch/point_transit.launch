@@ -1,8 +1,0 @@
-<launch>
-    <node name="point_transit" pkg="topic_transit" type="point_transit" output="screen">
-<!--         <param name="csv_file_path" value="/home/lsy/navigation_ws/src/gbx_navigation/topic_transit/record_trajectory/simulation.csv" /> -->
-<!--           <param name="csv_file_path" value="/home/vipbot/ros_ws/navigation_ws/src/gbx_navigation/topic_transit/record_trajectory/E3_121.csv" />  -->
-<!--         <param name="csv_file_path" value="/home/vipbot/ros_ws/navigation_ws/src/gbx_navigation/topic_transit/record_trajectory/2F.csv" /> -->
-            <param name="csv_file_path" value="/home/vipbot/ros_ws/navigation_ws/src/gbx_navigation/topic_transit/record_trajectory/2F_E.csv" />
-    </node>
-</launch>

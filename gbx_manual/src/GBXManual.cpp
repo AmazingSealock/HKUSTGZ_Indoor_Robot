@@ -19,12 +19,14 @@ GBXManual::GBXManual(ros::NodeHandle nh, tf2_ros::Buffer& tfBuffer)
   }
   trajectoryPublisher_ = std::make_unique<TrajectoryPublisher>(nh_,csv_paths);
   cancelNavigationClient_ = nh_.serviceClient<std_srvs::Empty>("/cancel_navigation");
-  globalCostmapRos_ = new costmap_2d::Costmap2DROS("global_costmap", tfBuffer_);
-  localCostmapRos_ = new costmap_2d::Costmap2DROS("local_costmap", tfBuffer_);
-  globalCostmapRos_->start();
-  localCostmapRos_->start();
-  globalCostmap_ = globalCostmapRos_->getCostmap();
-  localCostmap_ = localCostmapRos_->getCostmap();
+  // globalCostmapRos_ = new costmap_2d::Costmap2DROS("global_costmap", tfBuffer_);
+  // localCostmapRos_ = new costmap_2d::Costmap2DROS("local_costmap", tfBuffer_);
+  // globalCostmapRos_->start();
+  // localCostmapRos_->start();
+  // globalCostmap_ = globalCostmapRos_->getCostmap();
+  // localCostmap_ = localCostmapRos_->getCostmap();
+
+  // navigationMonitor_ = std::make_unique<NavigationMonitor>(nh_);
 }
 
 GBXManual::~GBXManual()
@@ -41,13 +43,13 @@ void GBXManual::initialize()
   nh_.param<std::string>("velocity_cmd_topic", velocityCmdTopic_, "/cmd_vel");
   nh_.param<std::string>("system_state_topic", systemStateTopic_, "/system_state");
 
-  pointCloudSub_ = nh_.subscribe(pointCloudTopic_, 1, &GBXManual::pointCloudCallback, this);
-  imuSub_ = nh_.subscribe(imuTopic_, 1, &GBXManual::imuCallback, this);
-  globalPathSub_ = nh_.subscribe(globalPathTopic_, 1, &GBXManual::globalPathCallback, this);
-  globalWaypointsPathSub_ = nh_.subscribe(globalWaypointsPathTopic_, 1, &GBXManual::globalWaypointsPathCallback, this);
-  localPathSub_ = nh_.subscribe(localPathTopic_, 1, &GBXManual::localPathCallback, this);
-  velocityCmdSub_ = nh_.subscribe(velocityCmdTopic_, 1, &GBXManual::velocityCmdCallback, this);
-  systemStateSub_ = nh_.subscribe(systemStateTopic_, 1, &GBXManual::systemStateCallback, this);
+  // pointCloudSub_ = nh_.subscribe(pointCloudTopic_, 1, &GBXManual::pointCloudCallback, this);
+  // imuSub_ = nh_.subscribe(imuTopic_, 1, &GBXManual::imuCallback, this);
+  // globalPathSub_ = nh_.subscribe(globalPathTopic_, 1, &GBXManual::globalPathCallback, this);
+  // globalWaypointsPathSub_ = nh_.subscribe(globalWaypointsPathTopic_, 1, &GBXManual::globalWaypointsPathCallback, this);
+  // localPathSub_ = nh_.subscribe(localPathTopic_, 1, &GBXManual::localPathCallback, this);
+  // velocityCmdSub_ = nh_.subscribe(velocityCmdTopic_, 1, &GBXManual::velocityCmdCallback, this);
+  // systemStateSub_ = nh_.subscribe(systemStateTopic_, 1, &GBXManual::systemStateCallback, this);
 
   ros::NodeHandle cloud_nh(nh_,"cloud_filter");
   cloud_nh.param<double>("min_z", cloudMinZ_, 0.0);
@@ -56,6 +58,8 @@ void GBXManual::initialize()
   cloud_nh.param<double>("leaf_size", cloudLeafSize_, 0.1);
 
   pubTrajectoryServer_ = nh_.advertiseService("pub_trajectory", &GBXManual::pubTrajectory, this);
+
+  // navigationMonitor_->initialize();
 }
 
 bool GBXManual::pubTrajectory(navigation_msgs::pub_trajectory::Request& req,navigation_msgs::pub_trajectory::Response& res)
@@ -67,7 +71,6 @@ bool GBXManual::pubTrajectory(navigation_msgs::pub_trajectory::Request& req,navi
   auto it = trajectory.find(path_name);
   if (it != trajectory.end()) {
     ROS_INFO("Sender: %s, Path %s found. Publishing after 1 second delay.", sender.c_str(), path_name.c_str());
-    ros::Duration(1.0).sleep();
     trajectoryPublisher_->publishTrajectory(path_name);
     lastPubTrajectory_ = path_name;
     res.success = true;
@@ -150,19 +153,19 @@ void GBXManual::handleStop()
 void GBXManual::handleMove()
 {
   // checkForObstaclesOnPath(20);
-  if (!isPubTrajectory_)
-  {
-    trajectoryPublisher_->publishTrajectory(lastPubTrajectory_);
-    isPubTrajectory_ = true;
-  }
+  // if (!isPubTrajectory_)
+  // {
+  //   trajectoryPublisher_->publishTrajectory(lastPubTrajectory_);
+  //   isPubTrajectory_ = true;
+  // }
 
 //  ROS_INFO("In MOVE state. Robot is moving.");
+  // navigationMonitor_->publishSpeedMarkers();
 }
 
 void GBXManual::handleWait()
 {
   isPubTrajectory_ = false;
-  ros::Duration(1).sleep();
   transitionToState(NavigationState::MOVE);
 //  ROS_INFO("In WAIT state. Robot is waiting.");
   // 实现等待逻辑，例如等待信号或超时等
@@ -196,7 +199,6 @@ void GBXManual::checkForObstaclesAndHandle()
 {
   if (globalPath_.poses.empty()) {
     ROS_WARN("No global path available.");
-    return;
   }
 
 //  for (const auto& pose : globalPath_.poses) {

@@ -1,0 +1,16 @@
+<launch>
+  <!-- record all specified topics into a rosbag file -->
+  <arg name="bag_name" default="ouster_wit_data"/>
+  <arg name="path" default="$(env HOME)/rosbag"/>
+
+  <include file="$(find real_v1_config)/launch/record_bag/ouster_lidar.launch"/>
+  <include file="$(find real_v1_config)/launch/record_bag/wit_imu.launch"/>
+
+  <node pkg="rosbag" type="record" name="rosbag_record_ouster"
+        args="record -o $(arg path)/$(arg bag_name)
+              /ouster/imu
+              /ouster/points
+              /wit/imu">
+    <param name="split" value="false"/>
+  </node>
+</launch>

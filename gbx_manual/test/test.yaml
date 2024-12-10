@@ -7,8 +7,8 @@ velocity_cmd_topic: "/cmd_vel"
 vehicle_state_topic: "/system_state"
 
 story_trajectories:
-  - A_B: "/home/lsy/navigation_ws/src/gbx_navigation/topic_transit/record_trajectory/simulation.csv"
-  - b_C: "/home/lsy/navigation_ws/src/gbx_navigation/topic_transit/record_trajectory/simulation_1.csv"
+  - A_B: "/home/lsy/navigation_ws/src/gbx_navigation/navigation_tools/record_trajectory/simulation.csv"
+  - b_C: "/home/lsy/navigation_ws/src/gbx_navigation/navigation_tools/record_trajectory/simulation_1.csv"
 
 cloud_filter:
   min_z: -0.1

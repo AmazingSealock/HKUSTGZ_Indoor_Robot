@@ -60,6 +60,7 @@
 #include <base_local_planner/simple_scored_sampling_planner.h>
 
 #include <nav_msgs/Path.h>
+#include <tf2/LinearMath/Quaternion.h>
 
 namespace dwa_local_planner
 {
@@ -160,7 +161,7 @@ private:
 
   boost::mutex configuration_mutex_;
   std::string frame_id_;
-  ros::Publisher traj_cloud_pub_;
+  ros::Publisher traj_cloud_pub_, best_traj_pub_;
   bool publish_cost_grid_pc_;  ///< @brief Whether or not to build and publish a PointCloud
   bool publish_traj_pc_;
 
