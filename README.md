@@ -298,3 +298,21 @@ Null
 ## Contact
 
 For questions or inquiries, please contact [Yujie ZHOU](yzhou118@connect.hkust-gz.edu.cn).
+
+header: 
+  seq: 2120
+  stamp: 
+    secs: 0
+    nsecs:         0
+  frame_id: "map"
+pose: 
+  position: 
+    x: -0.608177256866236
+    y: -0.017914612850541176
+    z: 0.025961452968140498
+  orientation: 
+    x: -0.00877066212100379
+    y: -0.003911988209552485
+    z: -0.0012454994323954165
+    w: 0.9999531091833114
+
