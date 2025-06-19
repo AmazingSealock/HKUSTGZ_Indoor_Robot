@@ -299,6 +299,7 @@ Null
 
 For questions or inquiries, please contact [Yujie ZHOU](yzhou118@connect.hkust-gz.edu.cn).
 
+```
 header: 
   seq: 2120
   stamp: 
@@ -315,4 +316,54 @@ pose:
     y: -0.003911988209552485
     z: -0.0012454994323954165
     w: 0.9999531091833114
+```
 
+```
+#!/usr/bin/env python3
+import rospy
+import csv
+import os
+from geometry_msgs.msg import PoseStamped
+import time
+
+# 定义CSV文件路径
+csv_file_path = os.path.expanduser("~/pose_data.csv")
+
+# 写入CSV头部（若文件不存在）
+if not os.path.exists(csv_file_path):
+    with open(csv_file_path, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(["timestamp", "x", "y", "z"])
+
+# 上次写入时间
+last_write_time = 0
+
+# 回调函数
+def pose_callback(msg):
+    global last_write_time
+    current_time = time.time()
+
+    # 每1秒保存一次
+    if current_time - last_write_time >= 1.0:
+        x = msg.pose.position.x
+        y = msg.pose.position.y
+        z = msg.pose.position.z
+        timestamp = rospy.Time.now().to_sec()
+
+        with open(csv_file_path, mode='a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow([timestamp, x, y, z])
+
+        rospy.loginfo(f"Saved pose at {timestamp:.2f}: x={x:.3f}, y={y:.3f}, z={z:.3f}")
+        last_write_time = current_time
+
+# 主函数
+def listener():
+    rospy.init_node('pose_logger', anonymous=True)
+    rospy.Subscriber("/pose_stamped", PoseStamped, pose_callback)
+    rospy.spin()
+
+if __name__ == '__main__':
+    listener()
+
+```
